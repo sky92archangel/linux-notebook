@@ -404,7 +404,21 @@ sky92@sky92:~$ docker run --rm -itd --name excalidraw -p 5000:80 excalidraw/exca
 docker run -d --name=openresty -p 8886:80  -v /home/sky92/docker_data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /home/sky92/docker_data/nginx/conr_data/nginx/log:/var/log/nginx -v /home/sky92/docker_data/nginx/html:/usr/share/nginx/html --privileged=true --restart=always openresty/openresty
 
 
-
+#resilio-sync 互联网P2P同步工具
+docker create \
+--name=resilio_sync \
+-e PUID=1000 \
+-e PGID=1000 \
+-e TZ=Asia/Shanghai \
+-e UMASK_SET=022 \
+-p 8888:8888 \
+-p 55555:55555 \
+-v /home/sky92/docker_data/resilio_sync/config:/config \
+-v /home/sky92/docker_data/resilio_sync/downloads:/downloads \
+-v /home/sky92/docker_data/resilio_sync/sync:/sync \
+--restart unless-stopped \
+linuxserver/resilio-sync
+ 
 ```
 
 

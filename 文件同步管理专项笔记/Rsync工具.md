@@ -4,7 +4,9 @@
 
 [toc]
 
+sky92@sky92:~$
 
+sky92@sky92-virtual-machine:~$
 
 ## 一、安装
 
@@ -15,6 +17,15 @@ sky92@sky92-virtual-machine:~$ sodu yum install rsync -y
 
 #ubuntu
 sky92@sky92-virtual-machine:~$ sudo apt-get install rsync
+
+#启动
+sky92@sky92-virtual-machine:~$ sudo systemctl start rsync
+
+#开机自启动
+sky92@sky92-virtual-machine:~$ sudo systemctl enable rsync
+
+#默认端口 tcp  873 查看端口
+sky92@sky92-virtual-machine:~$ sudo netstat -tlnp
 
 #help
 sky92@sky92-virtual-machine:~$ rsync -h
