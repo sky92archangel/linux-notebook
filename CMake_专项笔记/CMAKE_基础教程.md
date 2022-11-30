@@ -321,8 +321,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mylib)
 #将生成的可执行文件放入固定的成果位置
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-# 查找当前目录下的所有源文件
-# 并将名称保存到 DIR_SRCS 变量
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
 AUX_SOURCE_DIRECTORY(./ DIR_SRCS)
 
 #添加可执行程序
@@ -409,8 +408,8 @@ void MY_LIB_API myprint(std::string str1, double count);
 
 ```cmake
 ##########################  ./mydll/CMakeLists.txt    #############################
-# 查找当前目录下的所有源文件
-# 并将名称保存到 DIR_LIB_SRCS 变量
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
 AUX_SOURCE_DIRECTORY(. DIR_LIB_SRCS)  
 
 #指定库文件输出路径 LIBRARY_OUTPUT_PATH    
@@ -427,8 +426,8 @@ ADD_LIBRARY(myprint SHARED ${DIR_LIB_SRCS})
 
 ```cmake
 ##########################  ./mylib/CMakeLists.txt    #############################
-# 查找当前目录下的所有源文件
-# 并将名称保存到 DIR_LIB_SRCS 变量
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
 AUX_SOURCE_DIRECTORY(. DIR_LIB_SRCS) 
  
 #指定库文件输出路径 LIBRARY_OUTPUT_PATH    
@@ -493,9 +492,171 @@ ADD_SUBDIRECTORY(./myapp)
 
 
 
+### 6.改进demo5标准工程demo6 
+
+文件夹结构
+
+```SHELL
+.
+├── CMakeLists.txt
+├── myapp
+│   ├── CMakeLists.txt
+│   └── main.cpp
+├── mydll
+│   ├── CMakeLists.txt
+│   ├── myprint.cpp
+│   └── myprint.hpp
+└── mylib
+    ├── CMakeLists.txt
+    ├── mymath.cpp
+    └── mymath.hpp 
+```
+
+windows中的注意事项
+
+```c++
+//这里的需要生成dll文件的工程代码务必注意一点 
+//在windows中  所有的类和函数前都要加上  __declspec(dllexport) 前缀  此前缀可以用宏定义来简化写法
+//这样才能调用封装在动态链接库中的函数
+//==================================myprint.hpp======================================
+#define MY_LIB_API __declspec(dllexport) 
+#include<iostream>
+#include<string>
+inline
+void MY_LIB_API myprint(std::string str1, double count);
+```
+
+./mydll/CMakeLists.txt  动态库代码   主要任务：生成动态库文件
+
+```cmake
+##########################  ./mydll/CMakeLists.txt    #############################
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)  
+
+#添加动态库 名为libmath.so  动态库文件  linux下为.so   win下为.dll
+#STATIC静态库    SHARED动态库  MODULE使用dyld系统有效 否则等同于动态库
+ADD_LIBRARY(myprint SHARED ${DIR_SRCS})
+  
+#所有依赖当前库的使用者 都包含了这里文件   INTERFACE 关键字用法  
+#使用者的cmake文件 只用target_link_libraries连接模块名mymath即可  可直接囊括调用当前库源文件
+#使用者的cmake文件无需再次使用 target_include_directories 来囊括源文件
+#建议所有的库都加上该条
+target_include_directories(myprint
+INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# INTERFACE 用于调用者囊括当前库目录   这里就是INTERFACE 
+# PUBLIC 用于本库编译时囊括当前库目录 且 调用者囊括当前库目录
+# PRIVATE 用于本库编译时囊括当前库目录
+# PUBLIC = PRIVATE + INTERFACE
+```
+
+./mylib/CMakeLists.txt  静态库代码  主要任务：生成静态库文件
+
+```cmake
+##########################  ./mylib/CMakeLists.txt    #############################
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)
+
+#添加静态库 名为libmath.a  静态库文件  linux下为.a   win下为.lib
+#STATIC静态库    SHARED动态库  MODULE使用dyld系统有效 否则等同于动态库
+# 建立静态库 mymath  这里应该生成文件mymath.lib 或 mymath.a
+ADD_LIBRARY(mymath STATIC)
+ 
+#在这里指定 mymath 的 源代码
+target_sources(mymath
+PRIVATE
+    ${DIR_SRCS}
+)
+  
+#所有依赖当前库的使用者 都包含了这里文件   INTERFACE 关键字用法  
+#使用者的cmake文件 只用target_link_libraries连接模块名mymath即可  可直接囊括调用当前库源文件
+#使用者的cmake文件无需再次使用 target_include_directories 来囊括源文件
+#建议所有的库都加上该条
+target_include_directories(mymath
+INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# INTERFACE 用于调用者囊括当前库目录   这里就是INTERFACE 
+# PUBLIC 用于本库编译时囊括当前库目录 且 调用者囊括当前库目录
+# PRIVATE 用于本库编译时囊括当前库目录
+# PUBLIC = PRIVATE + INTERFACE
+```
+
+./myapp/CMakeLists.txt   主程的 CMakeLists.txt     主要任务 ：查找头文件  添加主程依赖 引用库文件
+
+```cmake
+##########################  ./myapp/CMakeLists.txt    #############################
+
+#向工程添加多个头文件搜索路径  PROJECT_SOURCE_DIR 项目根目录路径  
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mylib)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mydll)
+  
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(./ DIR_SRCS)
+
+#添加可执行程序
+ADD_EXECUTABLE(demoproj6 ${DIR_SRCS})
+
+#将子目录生成的库链接过来
+TARGET_LINK_LIBRARIES(demoproj6 
+PRIVATE
+    mymath
+    myprint
+) 
+```
+
+./CMakeLists.txt     工程根目录的 CMakeLists.txt  统筹各个子目录
+
+```cmake
+##########################  ./CMakeLists.txt    #############################
+
+#指定最低版本号
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+# 设置C/C++标准
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/lib)   #静态库 静态库编译直接进入exe 这里作为备份
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)       #可执行文件
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)       #动态库  需要和可执行文件同目录
+
+#项目名称
+PROJECT(demoproj6)
+
+#添加程序的子目录mylib   若加EXCLUDE_FROM_ALL则为编译过程忽略该目录
+ADD_SUBDIRECTORY(./mylib)
+#添加程序的子目录mydll  动态库  若上述不指定输出则写为  ADD_SUBDIRECTORY(./mydll bin)
+ADD_SUBDIRECTORY(./mydll)
+
+#添加程序的子目录src  这里是主程文件夹
+ADD_SUBDIRECTORY(./myapp) 
+```
+
+构建和编译
+
+```shell
+#直接指定configuration的文件夹为build
+$ cmake -B build
+# 开始构建
+cmake --build build/
+#此时在 build文件夹内就出现了结果  当然结果文件结构会根据CMakeLists.txt内的设置有改变  
+#这里结果应该是出现连个文件夹 bin build 
+```
+
+  
+
 ### 附
 
 ```cmake
+#这里对与windows用户非常重要  其解决dll生成后主程仍然寻求lib文件   尤其在于使用MSVC用户
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 #创建工程helloworld
 PROJECT (helloworld)
 
@@ -504,6 +665,9 @@ SET(src  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp )
 	
 #添加可执行程序 helloworld工程 为目标
 ADD_EXECUTABLE(helloworld   ${src})
+
+
+
 ```
 
 
@@ -515,7 +679,7 @@ ADD_EXECUTABLE(helloworld   ${src})
 ```shell
 
 #假设已经完成了所有的CMakeLists.txt的编写
-
+################################################
 #进入项目根目录 建立build文件夹 
 $ mkdir build
 #进入build
@@ -524,6 +688,13 @@ $ cd build
 $ cmake ..
 # 开始构建
 cmake --build .
+#此时在 build文件夹内就出现了结果  当然结果文件结构会根据CMakeLists.txt内的设置有改变
+################################################
+#当然可以不进入build文件夹 
+#直接指定configuration的文件夹为build
+$ cmake -B build
+# 开始构建
+cmake --build build/
 #此时在 build文件夹内就出现了结果  当然结果文件结构会根据CMakeLists.txt内的设置有改变
 ```
 
@@ -608,3 +779,373 @@ cmake -S . -B build -G "MinGW Makefiles"
 ```
 
  
+
+## 四、cmake配置文件
+
+当需要引入cmake脚本模块配置的时候
+
+```cmake
+######################  针对 ./cmakeconf/building_output.cmake  ####################
+INCLUDE(cmakeconf/building_output.cmake)
+
+######################  针对 ./cmakeconf/compiler_conf.cmake  ####################
+INCLUDE(cmakeconf/compiler_conf.cmake)
+
+#这两个语句放入同目录CMakeLists即可
+
+#更加简单的写法  版本3.15+
+SET(CMAKE_MODULE_PATH   ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmakeconf )
+INCLUDE(building_output)
+INCLUDE(compiler_conf)
+```
+
+生成选项
+
+```cmake
+# 设置C/C++标准 生成配置
+add_definitions(-std=c++17)
+set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -03 -Wall")
+```
+
+ 
+
+
+
+## 附录1 完整示例工程
+
+### 目录部分
+
+```shell
+.
+├── CMakeLists.txt 
+├── myapp
+│   ├── CMakeLists.txt
+│   └── main.cpp
+├── mycore
+│   ├── CMakeLists.txt
+│   └── core.cpp
+├── mydll
+│   ├── CMakeLists.txt
+│   ├── myprint.cpp
+│   └── myprint.hpp
+└── mylib
+    ├── CMakeLists.txt
+    ├── mymath.cpp
+    └── mymath.hpp 
+```
+
+### 代码部分
+
+windows中的注意事项
+
+```c++
+//这里的需要生成dll文件的工程代码务必注意一点 
+//在windows中  所有的类和函数前都要加上  __declspec(dllexport) 前缀  此前缀可以用宏定义来简化写法
+//这样才能调用封装在动态链接库中的函数
+//==================================myprint.hpp======================================
+#define MY_LIB_API __declspec(dllexport) 
+#include<iostream>
+#include<string>
+inline
+void MY_LIB_API myprint(std::string str1, double count);
+```
+
+main.cpp
+
+```C++
+#include <iostream>
+#include <stdlib.h>
+#include "mymath.hpp"
+#include "myprint.hpp"
+// #include "../mylib/mymath.hpp"
+// using namespace std;
+
+int main(int argc, char *argv[])
+{
+    if (argc < 3)
+    {
+        std::cout << "Usage:" << argv[0] << std::endl;
+        return 1;
+    }
+    double base = atof(argv[1]);
+    int exp = atoi(argv[2]);
+    std::cout << "result:" << std::endl
+              << power(base, exp);
+
+    myprint("result is ", power(base, exp));
+#if DEBUG
+    std::cout << " DEBUG ON " << std::endl;
+#endif
+    return 0;
+}
+```
+
+./mylib/mymath.hpp
+
+```c++
+#pragma once 
+inline 
+double power(double base, double exp); 
+```
+
+./mylib/mymath.cpp
+
+```c++
+#include "mymath.hpp"
+double power(double base , double exp)
+{
+    int res = base;
+    if(base ==1)
+    {
+        return 1;
+    }
+    for (int i = 1; i < exp; i++)
+    {
+        res = res*base;
+    }
+    return res;
+}
+```
+
+./mydll/myprint.hpp
+
+```c++
+#pragma once
+
+#include "core.hpp"
+#include <iostream>
+#include <string>
+ 
+inline 
+void API_EXPORT myprint(std::string str1, double count);
+
+```
+
+./mydll/myprint.cpp
+
+```c++
+
+#include "myprint.hpp"
+
+void MY_LIB_API myprint(std::string str1, double calResult)
+{
+    std::cout << str1 << calResult << std::endl;
+}
+```
+
+./mycore/core.hpp
+
+```c++
+#define API_IMPORT __declspec(dllimport)//如果是生成使用dll的工程，那么导入
+#define API_EXPORT __declspec(dllexport)//如果是生成dll工程，那么导出 
+```
+
+### CMake文件部分
+
+ ./mycore/CMakeLists.txt  动态库代码   主要任务：纯粹头文件库提供给其他程序引用
+
+```cmake
+#将当前目录下的所有文件都放入变量DIR_LIB_SRCS内
+AUX_SOURCE_DIRECTORY(. DIR_LIB_SRCS) 
+  
+#INTERFACE用于纯粹头文件库
+ADD_LIBRARY(mycore INTERFACE )
+#添加所用文件
+target_sources(mycore
+PRIVATE
+    ${DIR_LIB_SRCS}
+)
+
+#所有依赖当前库的使用者 都包含了这里文件   INTERFACE 关键字用法  
+#使用者的cmake文件 只用target_link_libraries连接模块名mycore即可  可直接囊括调用当前库源文件
+#使用者的cmake文件无需再次使用 target_include_directories 来囊括源文件
+#建议所有的库都加上该条  虽然不一定起效用  
+# 将自己的头文件供给其他调用  
+#包含core.hpp  
+target_include_directories(mycore
+INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# INTERFACE 用于调用者囊括当前库目录   这里就是INTERFACE 
+# PUBLIC 用于本库编译时囊括当前库目录 且 调用者囊括当前库目录
+# PRIVATE 用于本库编译时囊括当前库目录
+# PUBLIC = PRIVATE + INTERFACE
+```
+
+
+
+./mydll/CMakeLists.txt  动态库代码   主要任务：生成动态库文件
+
+```cmake
+##########################  ./mydll/CMakeLists.txt    #############################
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)  
+
+#添加动态库 名为libmath.so  动态库文件  linux下为.so   win下为.dll
+#STATIC静态库    SHARED动态库  MODULE使用dyld系统有效 否则等同于动态库
+ADD_LIBRARY(myprint SHARED ${DIR_SRCS})
+  
+#所有依赖当前库的使用者 都包含了这里文件   INTERFACE 关键字用法  
+#使用者的cmake文件 只用target_link_libraries连接模块名mymath即可  可直接囊括调用当前库源文件
+#使用者的cmake文件无需再次使用 target_include_directories 来囊括源文件
+#建议所有的库都加上该条 虽然不一定起效用   即将自己的头文件供给其他调用
+target_include_directories(myprint
+INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# INTERFACE 用于调用者囊括当前库目录   这里就是INTERFACE 
+# PUBLIC 用于本库编译时囊括当前库目录 且 调用者囊括当前库目录
+# PRIVATE 用于本库编译时囊括当前库目录
+# PUBLIC = PRIVATE + INTERFACE
+
+#这里的myprint 依赖 mycore
+TARGET_LINK_LIBRARIES(myprint
+PUBLIC
+    mycore  
+) 
+ 
+```
+
+./mylib/CMakeLists.txt  静态库代码  主要任务：生成静态库文件
+
+```cmake
+##########################  ./mylib/CMakeLists.txt    #############################
+
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)
+
+#添加静态库 名为libmath.a  静态库文件  linux下为.a   win下为.lib
+#STATIC静态库    SHARED动态库  MODULE使用dyld系统有效 否则等同于动态库
+# 建立静态库 mymath  这里应该生成文件mymath.lib 或 mymath.a
+ADD_LIBRARY(mymath STATIC)
+ 
+#在这里指定 mymath 的 源代码
+target_sources(mymath
+PRIVATE
+    ${DIR_SRCS}
+)
+  
+#所有依赖当前库的使用者 都包含了这里文件   INTERFACE 关键字用法  
+#使用者的cmake文件 只用target_link_libraries连接模块名mymath即可  可直接囊括调用当前库源文件
+#使用者的cmake文件无需再次使用 target_include_directories 来囊括源文件
+#建议所有的库都加上该条
+target_include_directories(mymath
+INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+# INTERFACE 用于调用者囊括当前库目录   这里就是INTERFACE 
+# PUBLIC 用于本库编译时囊括当前库目录 且 调用者囊括当前库目录
+# PRIVATE 用于本库编译时囊括当前库目录
+# PUBLIC = PRIVATE + INTERFACE
+```
+
+./myapp/CMakeLists.txt   主程的 CMakeLists.txt     主要任务 ：查找头文件  添加主程依赖 引用库文件
+
+```cmake
+##########################  ./myapp/CMakeLists.txt    #############################
+
+#向工程添加多个头文件搜索路径  PROJECT_SOURCE_DIR 项目根目录路径  
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mycore)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mylib)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/mydll)
+  
+# 查找当前目录下的所有源文件  并将所有文件名称保存到 DIR_SRCS 变量
+AUX_SOURCE_DIRECTORY(./ DIR_SRCS)
+
+#添加可执行程序
+ADD_EXECUTABLE(demoproj7 ${DIR_SRCS})
+
+#将子目录生成的库链接过来  这里最好注意顺序  越是基础越是先放
+TARGET_LINK_LIBRARIES(demoproj7 
+PRIVATE
+	mycore
+    mymath
+    myprint
+) 
+```
+
+./CMakeLists.txt     工程根目录的 CMakeLists.txt  统筹各个子目录
+
+```cmake
+##########################  ./CMakeLists.txt    #############################
+
+#指定最低版本号
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+# 设置C/C++标准
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+#这里对与windows用户非常重要  其解决dll生成后主程仍然寻求lib文件   尤其在于使用MSVC用户
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/lib)   #静态库 静态库编译直接进入exe 这里作为备份
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)       #可执行文件
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)       #动态库  需要和可执行文件同目录
+
+#项目名称
+PROJECT(demoproj7)
+
+
+#添加程序的子目录mycore 若加EXCLUDE_FROM_ALL则为编译过程忽略该目录
+ADD_SUBDIRECTORY(./mycore)
+#添加程序的子目录mydll  动态库  若上述不指定输出则写为  ADD_SUBDIRECTORY(./mydll bin)
+ADD_SUBDIRECTORY(./mydll)
+#添加程序的子目录mylib   若加EXCLUDE_FROM_ALL则为编译过程忽略该目录
+ADD_SUBDIRECTORY(./mylib)
+
+
+#添加程序的子目录src  这里是主程文件夹
+ADD_SUBDIRECTORY(./myapp) 
+```
+
+构建和编译
+
+```shell
+#直接指定configuration的文件夹为build
+$ cmake -B build
+# 开始构建
+$ cmake --build build/
+#此时在 build文件夹内就出现了结果  当然结果文件结构会根据CMakeLists.txt内的设置有改变  
+#这里结果应该是出现连个文件夹 bin build 
+```
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
