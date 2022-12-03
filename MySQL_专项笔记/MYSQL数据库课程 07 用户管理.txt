@@ -1,0 +1,68 @@
+# 第七课 SQL用户
+
+[TOC]
+
+## SQL用户
+
+
+```mysql
+-- 默认只有一个root用户
+
+-- 默认保存于mysql保存用户信息   mysql数据库user表中
+
+-- 创建新用户 
+
+	CREATE USER 用户名 IDENTIFIED BY '密码';
+	创建后不能登录  因为没有初始化权限
+
+-- 删除用户 
+
+	DROP USER 用户名
+
+-- 重命名用户
+
+	RENAME USER 原用户名 TO 新用户名 ;
+
+-- 修改用户密码
+
+	SET PASSWORD = PASSWORD ('新密码') ;
+
+-- 修改指定用户密码：
+
+	SET PASSWORD FOR 用户名 = PASSWORD('新密码');
+```
+
+
+​	
+
+​	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

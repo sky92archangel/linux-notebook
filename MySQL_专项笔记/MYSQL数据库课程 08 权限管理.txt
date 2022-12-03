@@ -1,0 +1,100 @@
+# 第八课 权限系统
+
+[TOC]
+
+## 权限
+
+
+	1 检查用户是否连接诶
+	
+	2 是否有执行动作的权限
+
+## 层级
+
+		全局
+		数据库
+		表
+		列
+		子程序层级
+
+## 权限操作	
+
+```mysql
+-- 通过GRANT 授予权限 REVOKE 撤销权限
+-- 授予一个用户权限：
+
+	GRANT ALL PRIVILEGES ON 层级 TO 用户名@主机（远程来源） IDENTIFIED BY 密码 ;
+
+-- 	例如：
+-- 	全局授权
+	GRANT ALL PRIVILEGES ON *.* TO 'nash_su'@'%' IDENTIFIED BY 'linuxcast' ;
+	
+-- 	数据库授权
+	GRANT ALL PRIVILEGES ON linuxcast.* TO 'nash_su'@'%' IDENTIFIED BY 'linuxcast' ;
+
+-- 撤销用户权限
+
+	REVOKE ALL PRIVILEGES FROM 用户名 ;
+```
+
+
+```json
+授权主机 连接来源
+
+	所有主机	%
+	精确的域名或IP	www.linuxcast.net 或 192.168.1.1
+	使用*通配符	*.linuxcast.net
+	指定网段	192.168.1.0/255.255.255.0
+```
+
+
+刷新权限
+
+```mysql
+-- 最后  刷新权限
+FLUSH PRIVILEGES ;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

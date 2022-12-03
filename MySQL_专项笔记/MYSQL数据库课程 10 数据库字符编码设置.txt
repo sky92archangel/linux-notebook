@@ -1,0 +1,93 @@
+# 第十课  数据库编码
+
+[TOC]
+
+
+	在定义数据库时就需确定使用的编码
+	
+	如UTF8 GB2312 Big5 Latin
+	
+	1 不同编码 占用空间不同
+	2 数据库与客户端通讯
+
+
+
+
+```mysql 
+-- MYSQL默认编码是Latin1
+	character set : latin1
+	collation : latin1_swedish_ci
+
+-- 可以通过命令查看MYSQL支持的编码
+	SHOW CHARACTER SET ;
+
+	常用UTF8（万国） GB2312（简体） Big5（繁体） Latin
+	最好使用UTF8 高兼容
+```
+
+
+
+```mysql
+-- 查看当前编码 
+	SHOW VARIABLES LIKE 'character_set%' ; 
+	SHOW VARIABLES LIKE 'collation%' ;
+```
+
+
+```mysql
+-- 创建数据库的时候可以指定使用的编码
+
+	CTEATE DATABASE linuxcast 
+		DEFAULT CHARACTER SET utf8
+		DEFAULT COLLATE utf8_general_ci ;
+
+-- 也可以通过以下命令修改一个数据库的编码  （可能出现乱码，不常用）
+
+	ALTER DATABASE linuxcast CHARACTER SET utf8 COLLATE utf8_general_ci ;
+```
+
+
+
+```json
+-- 指定创建的默认编码
+
+-- 	修改配置文件
+
+	[client]
+	default-character-set=utf8
+	[mysql]
+	default-character-set=utf8
+	[musqld]
+	default-character-set=utf8
+	collation-server = utf8_unicode_ci
+	init-connect='SET NAMES utf8'
+	character-set-server = utf8
+
+-- 修改后 重启服务  再次查看
+
+	SHOW VARIABLES LIKE 'character_set%' ;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

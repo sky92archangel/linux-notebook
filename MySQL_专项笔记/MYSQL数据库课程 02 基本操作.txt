@@ -1,0 +1,88 @@
+# 第二课 基本操作
+
+[TOC]
+
+## mysql连接方法
+
+```shell
+mysql -h localhost -u root -p
+
+mysql -h 数据库所在地址 -u 登录用户 -p
+
+#默认是连接到本地
+```
+
+## 进入sql后
+
+```mysql
+-- 操作语句通常大写  也可以小写
+
+-- 查看数据库版本   大多语句用分号结尾
+
+	SELECT VERSION();	
+
+-- 获取当前时间
+
+	SELECT CURRENT_DATE ;
+
+-- 两者合并
+
+	SELECT VERSION(),CURRENT_DATE ;
+
+-- 基本数学计算
+
+	SELECT 4+4；
+	SELECT 4*4；
+
+-- 查看当前数据库
+
+	SHOW DATABASES ;
+```
+
+
+​	
+```mysql
+-- 创建数据库
+
+	CREATE DATABASE 数据库名;
+
+-- 删除数据库
+
+	DROP DATABASE 数据库名 ;
+
+-- 切换当前使用的数据库
+
+	USE 数据库名 ;
+
+-- 创建数据库名称确定后无法重命名
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
