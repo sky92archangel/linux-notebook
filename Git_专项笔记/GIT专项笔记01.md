@@ -302,8 +302,10 @@ git branch -d 分支名称
 ```
 
 
-?	远程
+远程
 ```shell
+#查看远程仓库
+git remote -v
 #修改远程仓库的本地别名
 git remote rename oldname newname 
 #移除与远程仓库的连接
