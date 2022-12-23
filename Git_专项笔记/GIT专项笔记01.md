@@ -275,7 +275,7 @@ git log --decorate --oneline --graph --all
 git checkout 分支名称
 ```
 
-### 第七课
+## 第七课
 
 
 ```shell
@@ -293,24 +293,42 @@ git merge 分支名称
 
 #修改文件名 
 git mv 旧名 新名	
-```
 
-
-		
-```shell
 #创建并还原到分支
 git checkout -b 分支名称
-```
 
-
-```shell
 #删除分支 
 git branch -d 分支名称
 ```
 
 
+远程
+```shell
+#查看远程仓库
+git remote -v
+#修改远程仓库的本地别名
+git remote rename oldname newname 
+#移除与远程仓库的连接
+git remote rm old_reposity_name 
+#新增仓库   origin为默认 可以改为其他名称
+git remote add origin git_remote_address
+git remote add github git@github.com:User/RepoName.git
+git remote add gitee git@gitee.com:User/RepoName.git
+ 
+```
 
-### 第八课
+远程推送
+
+
+```shell
+#推送到 origin 别名连接的远程仓库 中 的 master 分支  
+# -u 参数   把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来 可以简化命令
+git push -u origin master
+```
+
+ 
+
+## 第八课
 
 ```sh
 #匿名分支 
