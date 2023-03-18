@@ -10,7 +10,7 @@ sudo apt-get install git
 
 或下载源代码 编译安装
 
-GIT使用初始化
+### GIT使用初始化
 
 
 ```shell
@@ -39,7 +39,7 @@ GIT管理的文件有三种状态
 	已提交		committed
 ```
 
-
+### 常规操作
 
 ```shell
 #建立仓库 
@@ -53,8 +53,13 @@ git add * 	#添加工作目录里的所有文件
 git add .	#效果同上
 
 #提交暂存区文件到仓库
-
 git commit -m "add a readme file"
+
+#添加远程仓库
+git remote add origin https://git_remote_address.git
+
+#传到远程仓库
+git push origin
 ```
 
 
@@ -163,6 +168,9 @@ git add 文件
 
 #提交项目	
 git commit -m "注释"
+
+# 查看当前暂存区文件
+git ls-files
 ```
 
   	
@@ -236,6 +244,14 @@ git checkout -- README.md
 #删除工作区和暂存区某个文件 （取消跟踪 下次提交不进入仓库） 
 git rm 文件名		
 
+#消除某个文件在暂存区内的更改
+git checkout 文件名
+git restore 文件名
+
+#消除当前目录下所有的在暂存区内的更改
+git checkout .
+git restore .
+
 #将指针恢复到上个快照 撤销上一次提交
 git checkout HEAD~
 
@@ -244,6 +260,11 @@ git rm -f 文件名
 
 #仅仅删除暂存区文件  保留工作区文件
 git rm --cached 文件名
+
+#显示未跟踪的文件
+git clean -dn
+#删除所有未跟踪文件
+git clean -df
 
 #重命名文件
 git mv 旧名 新名
@@ -296,6 +317,7 @@ git mv 旧名 新名
 
 #创建并还原到分支
 git checkout -b 分支名称
+git switch -c 分支名称
 
 #删除分支 
 git branch -d 分支名称
@@ -353,15 +375,213 @@ git push -u origin master
 
 
 
+## 第九课 消除和还原
 
+消除未跟踪的变更
 
+```shell
+######消除未跟踪的变更  消除未跟踪文件的变更#####
 
+#消除某个未跟踪文件的更改
+git checkout 文件名
+git restore 文件名
+Updated 1 paths from the index
 
+#消除当前目录下所有未跟踪文件的更改
+git checkout .
+git restore .
+Updated 2 paths from the index
 
+#显示未跟踪的文件
+git clean -dn
+#删除所有未跟踪文件
+git clean -df
 
+```
 
+消除已跟踪的变更 
 
+```shell
+######消除已跟踪的的变更  消除已在暂存区文件的变更#####
 
+#文件加入跟踪
+git add test.txt
+warning: LF will be replaced by CRLF in second.txt.
+The file will have its original line endings in your working directory
+
+#试图还原文件 但没有成功
+git checkout test.txt
+Updated 0 paths from the index
+
+#查看状态
+git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   test.txt
+#回溯操作
+git reset  test.txt
+git restore --staged test.txt
+Unstaged changes after reset:
+M       test.txt
+
+#还原文件成功
+git checkout test.txt
+Updated 1 paths from the index
+ 
+```
+
+### 提交回退
+
+```shell
+#产生文件
+echo 'test' > test.txt
+
+#跟踪文件
+git add test.txt
+warning: LF will be replaced by CRLF in unrequired.txt.
+The file will have its original line endings in your working directory
+
+#查看跟踪文件
+git ls-files
+.gitignore
+test.txt
+
+#提交
+git commit -m 'test file added'
+[master db9cca2] test file added
+ 1 file changed, 1 insertion(+)
+ create mode 100644 test.txt
+
+#查看日志
+git log
+commit db9cca2fd80f8489cd9d6000a74f4e6dee7beecd (HEAD -> master)
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:20:41 2023 +0800
+
+    test file added
+
+commit a19c8053b448e48b4ea2638ec58d3677d6e3b3bd
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:09:57 2023 +0800
+
+    my-first-commit
+
+#回退一步 软重置 删除最近一次提交 并将其中的文件变更移出暂存区
+git reset --soft HEAD~1
+#回退一步 硬重置 删除最近一次提交 且硬盘文件实时变更 
+git reset --hard HEAD~1
+
+#再次查看日志
+git log
+commit a19c8053b448e48b4ea2638ec58d3677d6e3b3bd (HEAD -> master)
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:09:57 2023 +0800
+
+    my-first-commit
+ 
+ 
+```
+
+### 删除分支
+
+```shell
+#删除多个分支
+git branch -D second-branch third-branch
+git branch -d second-branch third-branch
+ 
+```
+
+### 临时离群分支
+
+```shell
+#查看日志
+git log
+commit db9cca2fd80f8489cd9d6000a74f4e6dee7beecd (HEAD -> master)
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:20:41 2023 +0800
+
+    test file added
+
+commit ed8a19a0b240541e79600659ed25e5b7830c1441
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:09:57 2023 +0800
+
+    my-first-commit
+    
+#以某个提交状态创建离群分支
+git checkout ed8a19a0b240541e79600659ed25e5b7830c1441 
+
+Note: switching to 'ed8a19a0b240541e79600659ed25e5b7830c1441'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at ed8a19a reset test
+ 
+#修改文件 并提交
+echo 'gogog' > unrequired.txt && git add . && git commit -m 'change test file'
+
+warning: LF will be replaced by CRLF in unrequired.txt.
+The file will have its original line endings in your working directory
+[detached HEAD 2f880cd] change test file
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+#回到一般分支
+git switch master
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches:
+
+  2f880cd change test file
+
+If you want to keep it by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 2f880cd
+
+Switched to branch 'master'
+  
+#建立离群分支
+git branch detached-head 2f880cd    
+#转到分支
+git switch detached-head
+Switched to branch 'detached-head'
+
+#查看该分支
+git log
+commit 2f880cd85ab35ff4c66c01e8dc843722980d0a2b (HEAD -> detached-head)
+Author: sky92archangel <sky92@DESKTOP-P8SB3R8>
+Date:   Sat Mar 18 16:48:37 2023 +0800
+
+    change test file
+
+#回到一般分支
+git switch master
+Switched to branch 'master'
+
+#合并
+git merge detached-head
+ 
+  
+    
+    
+    
+    
+    
+
+```
 
 
 
