@@ -100,7 +100,7 @@ $ dotnet new console -n ConsoleApp
 #运行工程  ConsoleApp
 $ dotnet run --project ConsoleApp
 
-#以 release 方式运行
+#以 release 方式运行   即为 #if DEBUG #else #endif 切换操作
 $ dotnet run -c Release
  
 #仅构建不运行 
@@ -109,7 +109,7 @@ $ dotnet build
 
  
 
-## 安装第三方模块
+### 安装第三方模块
 
 ```shell
 # 安装 Newtonsoft.Json 版本13.0.0
@@ -128,7 +128,47 @@ $ dotnet add package Newtonsoft.Json
 
 
 
-## 测试项目
+### 附：主工程代码
+
+Porgram.cs
+
+```c#
+// See https://aka.ms/new-console-template for more information
+
+using Newtonsoft.Json;
+
+#if DEBUG
+Console.WriteLine("Hello, World! debug");
+#else
+Console.WriteLine("Hello, World! release");
+#endif
+
+var student = new Student(1, "sfe", "A");
+var json = JsonConvert.SerializeObject(student);
+Console.WriteLine(json);
+
+public class Student
+{
+
+    public Student(int _id, string _name, string _grade)
+    {
+        this.id = _id;
+        this.name = _name;
+        this.grade = _grade;
+    }
+    public int id { get; set; }
+    public string name { get; set; }
+    public string grade { get; set; }
+} 
+```
+
+使用上述命令行运行即可；
+
+
+
+## XUnit测试项目
+
+### 建立项目
 
 建立一个xunit的测试项目
 
@@ -162,9 +202,48 @@ $ cd ConsoleApp.Test
 $ dotnet test 
 ```
 
-  
+ 
+
+### 使用实例
+
+在主工程ConsoleApp中创建文件 StringUtils.cs
+
+```c#
+namespace ConsoleApp;
+public static class StringUtils{
+    public static string  Reversed(this string s){
+        var chars = s.ToCharArray();
+        Array.Reverse(chars);
+        return new string(chars);
+    }
+}
+```
+
+ 在测试工程ConsoleApp.Test中的UnitTest1.cs文件中写入
+
+```c#
+using ConsoleApp;
+namespace ConsoleApp.Test;
+
+public class UnitTest1
+{
+    [Fact]
+    public void Test_StringUtils_Reversed()
+    {
+        var testStr = "hello";
+        var reversed = StringUtils.Reversed(testStr );
+        Assert.Equal("olleh",reversed);
+    }
+}
+```
+
+然后使用上述命令行操作即可
+
+
 
 ## 解决方案
+
+建立一个解决方案，将所有工程都纳入解决方案内部管理；
 
 ```shell
 #建立解决方案
