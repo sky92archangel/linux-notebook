@@ -1,4 +1,5 @@
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.Aspect import  Aspect_GFM_VER
 
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDialog, QMainWindow
 # from PyQt5.QtUiTools import QUiLoader
@@ -33,6 +34,8 @@ class Stats(QDialog):
         self.canvas.resize(300, 300)
         self.canvas.InitDriver()
         self.display = self.canvas._display
+        self.display.set_bg_gradient_color([206, 215, 222], [128, 128, 128], Aspect_GFM_VER)  # 设置背景渐变色
+        self.display.display_triedron()  # display black trihedron 轴标
 
     def displayBOX(self):
         a_box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()

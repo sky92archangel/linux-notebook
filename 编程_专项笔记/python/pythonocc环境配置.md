@@ -199,6 +199,7 @@ https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
 ```python
 #pyocc_pyside2_ui.py
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.Aspect import  Aspect_GFM_VER
 
 from OCC.Display.backend import load_backend
 load_backend("qt-pyside2")			#这里必须 填写关键字  qt-pyside2 qt-pyqt5  wx   根据环境选一个
@@ -235,7 +236,9 @@ class Stats(QMainWindow):
         self.canvas.resize(200, 200)
         self.canvas.InitDriver()		# canva的驱动,设置驱动后，才能成功display
         self.display = self.canvas._display
-
+		self.display.set_bg_gradient_color([206, 215, 222], [128, 128, 128], Aspect_GFM_VER)# 设置背景渐变色
+   		self.display.display_triedron()   # display black trihedron 轴标
+        
     #创建box模型
     def displayBOX(self):
         a_box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()
@@ -254,10 +257,11 @@ app.exec_()
 ```python
 #pyocc_pyqt5_ui.py
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.Aspect import  Aspect_GFM_VER
 
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDialog, QMainWindow
 # from PyQt5.QtUiTools import QUiLoader
-from PyQt5 import uic
+from PyQt5 import uic		#这里和pyside2不同  官方的pyside命名是比较正规的
 from PyQt5.QtCore import QFile
 
 from OCC.Display.backend import load_backend
@@ -291,6 +295,8 @@ class Stats(QDialog):
         self.canvas.resize(200, 200)
         self.canvas.InitDriver()
         self.display = self.canvas._display
+        self.display.set_bg_gradient_color([206, 215, 222], [128, 128, 128], Aspect_GFM_VER)# 设置背景渐变色
+        self.display.display_triedron()   # display black trihedron 轴标
 
     #OCC创建box模型
     def displayBOX(self):

@@ -6,55 +6,40 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>517</width>
-    <height>553</height>
+    <width>1109</width>
+    <height>1040</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>标题栏</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPlainTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>20</y>
-      <width>401</width>
-      <height>151</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>190</y>
-      <width>191</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>显示BOX</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>280</y>
-      <width>401</width>
-      <height>201</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="hLayout"/>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,3">
+      <item>
+       <widget class="QPlainTextEdit" name="textEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button">
+        <property name="text">
+         <string>显示BOX</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="hLayout"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>517</width>
+     <width>1109</width>
      <height>23</height>
     </rect>
    </property>
