@@ -67,8 +67,12 @@ pip install pyside2 -i https://pypi.douban.com/simple/
 ```python
 #pyside_test.py
 import sys
-from PySide.QtCore import *
-from PySide.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import (
+    QApplication, 
+    QLabel
+)
 # Create a Qt application
 app = QApplication(sys.argv)
 # Create a Label and show it
