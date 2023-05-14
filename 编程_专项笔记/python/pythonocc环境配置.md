@@ -53,11 +53,15 @@ conda create -n pyoccenv_pyside --clone pyoccenv
 
 ```
 
-完成后 需要安装一个pyside界面或者pyqt 来使用pyocc库的样例代码，这里我们选择安装官方的pyside
+完成后 需要安装一个pyside界面或者pyqt 来使用pyocc库的样例代码，这里我们推荐安装官方的pyside
 
 ```shell
+#pyside环境
 activate pyoccenv_pyside
 pip install pyside2 -i https://pypi.douban.com/simple/
+#pyqt环境
+activate pyoccenv_pyqt
+pip install PyQt5-tools -i https://pypi.douban.com/simple
 ```
 
 ## 样例代码
@@ -112,9 +116,194 @@ https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
 
 
 
+## 配合QT窗体开发
+
+这里介绍将pyocc 结合 pyside 和 pyqt 两种代码，风格相同，细节但有区别
+
+首先使用qt-designer建立一个window.ui文件作为界面  
+
+```XML
+<!-- window.ui    注意这里面的两个关键字  button  hLayout  后台代码要用到  -->
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>526</width>
+    <height>801</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>标题栏</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPlainTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>20</y>
+      <width>401</width>
+      <height>161</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>190</y>
+      <width>191</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>显示BOX</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>280</y>
+      <width>401</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="hLayout"/>
+   </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>526</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+
+```
+
+运行部分代码采用类将ui部分逻辑包起来
+
+首先看在pyside2环境下的情况
+
+```python
+#pyocc_pyside2_ui.py
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+
+from OCC.Display.backend import load_backend
+load_backend("qt-pyside2")			#这里必须 填写关键字  qt-pyside2 qt-pyqt5  wx   根据环境选一个
+from OCC.Display import qtDisplay
+
+from PySide2.QtWidgets import QApplication, QMessageBox, QDialog, QMainWindow
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtCore import QFile
+ 
+#记得继承 QMainWindow 或者 QDialog
+class Stats(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        
+        # 从文件中加载UI定义   这是加载的一种备用方式
+        
+        # qfile_stats = QFile("../ui/window_demo.ui")
+        # qfile_stats.open(QFile.ReadOnly)
+        # # qfile_stats.close()
+        # self.ui = QUiLoader().load(qfile_stats)
+
+        # 这里是直接加载的方式
+        # 从 UI 定义中动态 创建一个相应的窗口对象
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.ui = QUiLoader().load('./window_demo.ui')
+        
+        #给按钮绑定建立BOX的动作
+        self.ui.button.clicked.connect(self.displayBOX)
+
+        self.canvas = qtDisplay.qtViewer3d(self)  	#这里初始化occ针对qt的显示
+        self.ui.hLayout.addWidget(self.canvas)		#关键代码 将occ针对qt的显示 加载到控件
+        self.canvas.resize(200, 200)
+        self.canvas.InitDriver()		# canva的驱动,设置驱动后，才能成功display
+        self.display = self.canvas._display
+
+    #创建box模型
+    def displayBOX(self):
+        a_box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()
+        self.ais_box = self.display.DisplayShape(a_box)[0]
+        self.display.FitAll()
 
 
+app = QApplication([])
+stats = Stats()
+stats.ui.show() 
+app.exec_()
+```
 
+再来看在pyqt5环境下的情况
+
+```python
+#pyocc_pyqt5_ui.py
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+
+from PyQt5.QtWidgets import QApplication, QMessageBox, QDialog, QMainWindow
+# from PyQt5.QtUiTools import QUiLoader
+from PyQt5 import uic
+from PyQt5.QtCore import QFile
+
+from OCC.Display.backend import load_backend
+load_backend("qt-pyqt5")	#这里必须 填写关键字  qt-pyside2 qt-pyqt5  wx   根据环境选一个
+from OCC.Display import qtDisplay
+
+# from pyocc_ui_demo import ShowShape
+
+class Stats(QDialog):
+
+    def __init__(self):
+        super().__init__()
+        
+        # 从文件中加载UI定义 这是加载的一种备用方式
+        # qfile_stats = QFile("./window_demo.ui")
+        # qfile_stats.open(QFile.ReadOnly)
+        # qfile_stats.close()
+        # self.ui = QUiLoader().load(qfile_stats)
+
+        # 这里是直接加载的方式
+        # 从 UI 定义中动态 创建一个相应的窗口对象
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.ui = uic.loadUi('./window_demo.ui')
+		
+        #给按钮绑定建立BOX的动作
+        self.ui.button.clicked.connect(self.displayBOX)
+
+        self.canvas = qtDisplay.qtViewer3d(self)	#这里初始化occ针对qt的显示  qtviewer3d
+        self.ui.hLayout.addWidget(self.canvas)		#关键代码 将occ针对qt的显示 加载到控件
+        self.canvas.resize(200, 200)
+        self.canvas.InitDriver()
+        self.display = self.canvas._display
+
+    #OCC创建box模型
+    def displayBOX(self):
+        a_box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()
+        self.ais_box = self.display.DisplayShape(a_box)[0]
+        self.display.FitAll()
+     
+app = QApplication([])
+stats = Stats()
+stats.ui.show()
+# ShowShape()
+app.exec_()
+```
 
 
 
