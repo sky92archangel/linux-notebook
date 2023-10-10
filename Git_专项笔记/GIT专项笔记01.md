@@ -573,19 +573,87 @@ Switched to branch 'master'
 
 #合并
 git merge detached-head
- 
   
-    
-    
-    
-    
     
 
 ```
 
 
 
+## 第十课 大文件问题
 
+### 情况分析
+
+1. 本地add之后发现误操作将大文件加入暂存
+2. 已经提交至本地仓库，但没有同步至远程仓库
+3. 已经同步至远程仓库
+4. 非本人操作，但远程库已经存在大文件
+
+### 对策
+
+### 情况123
+
+```shell
+########1 本地add之后发现误操作将大文件加入暂存 ########
+#将文件从暂存区中删除
+git rm --cached video.mp4
+
+
+########2 已经提交至本地仓库，但没有同步至远程仓库    ########
+#reset到上一版本
+git reset HEAD^	
+#然后回收垃圾
+git gc
+
+
+########3 已经同步至远程仓库  ########
+#首先垃圾回收
+git gc 	
+#然后使用扩展的git命令filter-repo  下载地址：https://github.com/newren/git-filter-repo
+#删除所有提交中的这个文件， 这个文件的commit和文件本体都会消失
+git filter-repo --path=glob video.mp4 --invert-paths --force 
+#然后再一次垃圾回收
+git gc --aggressive
+#重添加git远程库引用
+git remote add origin git@XXXXX.github.com:sskk/demo.git
+#强制所有推送
+git push --all --force
+#推送所有tag
+git push --tags --force
+
+```
+
+###  复杂情况4
+
+```shell
+########4 非本人操作，但远程库已经存在大文件 且不一定在当前分支 ########
+#首先垃圾回收
+git gc
+#从pack中寻找大文件
+#git verify-pack -v .git.objects/pack/*.idx 输出所有objectid 大小 等
+#grep blob过滤出blob对象
+#sort -k 3 -n 结果以第三个字段排序
+#cut -f 1 -d " "  按照空格分离字段
+#去除尾部tail -10
+#为寻找top10大的blob对象 显示为    ID  文件名  两列
+git rev-list --objects --all || grep -f <(git verify-pack -v .git.objects/pack/*.idx | grep blob | sort -k 3 -n | cut -f 1 -d " " | tail -10)
+###获得体积前10大的文件简单命令，需要自定义该操作
+git largefiles -t 10
+#然后使用扩展的git命令filter-repo  下载地址：https://github.com/newren/git-filter-repo
+#删除所有提交中的这个文件， 这个文件的commit和文件本体都会消失
+git filter-repo --path=glob video.mp4 --invert-paths --force
+#然后再一次垃圾回收
+git gc --aggressive
+#重添加git远程库引用
+git remote add origin git@XXXXX.github.com:sskk/demo.git
+#强制所有推送
+git push --all --force
+#推送所有tag
+git push --tags --force
+
+#如果要查看获得的文件大小需要cat-file ID
+git cat-file -s 2018138e1385c1e8c1e384c1e8331e87
+```
 
 
 
