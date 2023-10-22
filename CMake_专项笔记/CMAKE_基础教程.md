@@ -1126,7 +1126,103 @@ $ cmake --build build/
 #这里结果应该是出现连个文件夹 bin build 
 ```
 
-  
+ 
+
+## 实例二
+
+### 工程1
+
+工程目录
+
+```shell
+.
+├── CMakeLists.txt
+├── include
+│   ├── core
+│   │   ├── assert.hpp
+│   │   ├── cgmath.hpp
+│   │   └── log.hpp
+│   └── engine.hpp
+├── src
+│   └── main.cpp
+└── test
+    ├── catch.hpp
+    ├── cgmath.hpp
+    └── CMakeLists.txt
+```
+
+./CMakeLists.txt
+
+```cmake
+#./CMakeLists.txt
+cmake_minimum_required(VERSION 3.20)	#指定cmake的版本
+project(
+	engine						#工程名称
+	LANGUAGES CXX C				#可选 编程语言
+	DESCRIPTION "GAME ENGINE"	#可选 描述
+	VERSION 0.10.00				#可选 版本号
+)
+
+set(EXPORT_COMPILE_COMMANDS ON) #针对ninja makefile等 需要打开
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON) #针对ninja makefile 正规写法 需要打开
+ 
+# add_library(engine STATIC src/main.cpp)  #测试专用 和add_executable不兼容
+add_executable(main src/main.cpp)
+target_include_directories(main 
+PUBLIC 
+	include
+	include/core
+)		
+
+# PRIVATE 头文件搜索路径不会顺延  
+# PUBLIC则会扩展顺延 
+# INTERFACE 单纯依赖 用于不编译的头文件
+# target一类命令中 前者依赖后者 
+target_compile_features(main PUBLIC cxx_std_17)	#指定语言版本
+
+include(CTest) 		# CTest是cmake官方提供的测试工具集 
+enable_testing()	#启用测试
+add_subdirectory(test)
+```
+
+cmake编译命令
+
+```shell
+##########初始化指令##########
+#S指定camke初始化目录  B指定cmake构建路径
+$ cmake -S . -B cmake-build
+
+#可以直接输入，可以看到当前版本支持的编译器  带有*号为默认
+$ cmake -G
+CMake Error: No generator specified for -G
+Generators
+* Visual Studio 17 2022        = Generates Visual Studio 2022 project files.
+                                 Use -A option to specify architecture.
+  Visual Studio 16 2019        = Generates Visual Studio 2019 project files.
+                                 Use -A option to specify architecture.
+                                 ...
+#所以初始化的命令我们也可以这样写
+$ cmake -S . -B cmake-build -G "Visual Studio 17 2022"
+#默认PC首编译器 如果时VS2022 则会出现cmake-build目录，并在其中出现sln工程
+
+##########编译指令##########
+$ cmake --build ./cmake-build/
+
+```
+
+./test/CMakeLists.txt
+
+```cmake
+add_executable(cgmath ./cgmath.cpp)		#添加文件
+
+#构建测试工程 TARGET_FILE表达测试文件的生成运行路径
+add_test(NAME cgmath_test COMMAND $<TARGET_FILE:cgmath>)	
+
+#先前在主CAMKE文件engine内add_library指定的库   前者依赖后者
+target_link_libraries(cgmath  PRIVATE engine)
+```
+
+
 
 
 

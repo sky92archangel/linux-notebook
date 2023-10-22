@@ -96,16 +96,19 @@ GNU 软件的通用帮助: <http://www.gnu.org/gethelp/>
 ```shell
 #建立一个文件
 sky92@sky92:~$ cat /etc/passwd > /tmp/pwd.txt
-
+#找出带有root行
 sky92@sky92:~$ grep -i 'root' /tmp/pwd.txt
 root:x:0:0:root:/root:/bin/bash 
+#找出带有root行，显示行号
 sky92@sky92:~$ grep -in 'root' /tmp/pwd.txt
 1:root:x:0:0:root:/root:/bin/bash
+#找出带有root行，显示行号
 sky92@sky92:~$ grep 'root' /tmp/pwd.txt -i -n
 1:root:x:0:0:root:/root:/bin/bash
+#找出带有root行，显示行号
 sky92@sky92:~$ grep 'root' /tmp/pwd.txt -in
 1:root:x:0:0:root:/root:/bin/bash
-
+# 查看总行数
 sky92@sky92:~$ grep 'bin' /tmp/pwd.txt  -c
 56 
 ```
@@ -126,6 +129,7 @@ the website is https://space.bilibili.com/5548363
 ```
 
 ```shell
+#cat查看 显示行数
 sky92@sky92:~$ cat -n /tmp/test.txt
      1  I like linux
      2
@@ -300,8 +304,6 @@ sky92@sky92:~$ grep '[A-Z0-9]' /tmp/test.txt  -n
 ### 使用grep操作ERE
 
 ```shell
-
-
 sky92@sky92:~$ grep -E 'i+' /tmp/test.txt  -n
 1:I like linux
 6:I have learn linux.
