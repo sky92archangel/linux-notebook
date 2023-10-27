@@ -6,7 +6,10 @@ using System.Linq;
 using System.Collections.Concurrent;
 
 
-demoqueue();
+{
+    demoawait demoawait = new demoawait();
+    demoawait.Async();
+}
 
 
 void demopp()
@@ -171,6 +174,7 @@ void demosemaphore()
 
 
 void demoqueue()
+
 {
 
     var queue = new ConcurrentQueue<int>();
@@ -218,3 +222,64 @@ void demoqueue()
         }
     }
 }
+
+
+
+void demotask()
+{
+    var task = new Task<string>(() =>
+    {
+        Thread.Sleep(1500);
+        return "done";
+    });
+
+    Console.WriteLine(task.Status.ToString());
+    task.Start();
+    // task.Status.ToString();
+    Console.WriteLine(task.Status.ToString());
+    Thread.Sleep(1000);
+    // task.Status.ToString();
+    Console.WriteLine(task.Status.ToString());
+    Thread.Sleep(2000);
+    // task.Status.ToString();
+    Console.WriteLine(task.Status.ToString());
+    task.Result.ToString();
+    Console.WriteLine(task.Result.ToString());
+
+
+}
+
+
+class demoawait
+{
+    public async void Async()
+    {
+        Helper.PrintThreadId("Before", "Async-Before");
+        await FooAsync();
+        Helper.PrintThreadId("After", "Async-After");
+        Console.ReadKey();
+    }
+
+    public async Task FooAsync()
+    {
+        Helper.PrintThreadId("Before", "FooAsync-Before");
+        await Task.Delay(1000);
+        Helper.PrintThreadId("After", "FooAsync-After");
+        Console.ReadKey();
+    }
+
+    public class Helper
+    {
+        private static int index = 1;
+        public static void PrintThreadId(string? message = null, string? name = null)
+        {
+            var title = $"{index}:{name}";
+            if (!string.IsNullOrEmpty(message))
+            { title += $"@{message}"; }
+            Console.WriteLine(title + "\t" + Environment.CurrentManagedThreadId.ToString());
+            Interlocked.Increment(ref index);
+        }
+    }
+
+}
+

@@ -1,10 +1,10 @@
-# C# 多线程
+# C# 多线程和异步
 
 [TOC]
 
+## 多线程
 
-
-## 概念和示例
+### 概念和示例
 
 线程为最小单位，进程中有一个或多个线程；
 
@@ -238,7 +238,7 @@ Elapsed time:226ms
 
 
 
-## 线程
+### 线程
 
 创建，传入ThreadStart委托，可配置线程，是否为后台线程；调用Thread.Start方法，可传参；
 
@@ -416,6 +416,99 @@ void ReadNumbers()
     }
 }
 ```
+
+
+
+
+
+## 异步编程
+
+### 概念
+
+异步不一定多线程  携程也可能异步，异步默认使用线程池，多线程常常阻塞 ，异步不要求阻塞；
+
+多线程适用于CPU密集和长时间运行任务，线程的创建销毁开销大，提供底层控制，不利于传参和返回，多线程代码书写繁琐；
+
+异步适合IO密集型操作，数量大短暂小任务，避免线程阻塞，提高系统相应；
+
+### 异步任务TASK
+
+包含异步任务状态，异步任务开启后不会阻塞，其借助线程池在其他线程运行，得到结果后返回先前状态；
+
+```C#
+
+using System.Diagnostics;
+using System.Threading;
+using System.Linq; 
+
+var task = new Task<string>(() =>
+{
+    Thread.Sleep(1500);
+    return "done";
+});
+
+Console.WriteLine(task.Status.ToString() );
+task.Start();
+// task.Status.ToString();
+Console.WriteLine(task.Status.ToString() );
+Thread.Sleep(1000);
+// task.Status.ToString();
+Console.WriteLine(task.Status.ToString() );
+Thread.Sleep(2000);
+// task.Status.ToString();
+Console.WriteLine(task.Status.ToString() );
+task.Result.ToString();
+Console.WriteLine(task.Result.ToString() );
+
+/*
+sky92@LAPTOP MINGW64 /d/NOTE/dotnet/DotnetSyncDemo (master)
+$ ./MultithreadingTutorials.Basiscs/bin/Debug/net7.0/MultithreadingTutorials.Basiscs.exe 
+Created
+WaitingToRun
+Running
+RanToCompletion
+done
+*/
+```
+
+
+
+### Async和Task
+
+被await的函数未必一定是async标记的，只要其返回的是task即可；
+
+具有async标记的函数体内部可以使用await关键字调用其他函数；
+
+await会等待异步任务；
+
+```C#
+public async void Async()
+{
+    Helper.PrintThreadId("Before","Async-Before");
+    await FooAsync();
+    Helper.PrintThreadId("After","Async-After");
+}
+public async Task FooAsync()
+{
+    Helper.PrintThreadId("Before","FooAsync-Before");
+    await Task.Delay(10);
+    Helper.PrintThreadId("After","FooAsync-After");
+}
+public class Helper
+{
+    private static int index = 1;
+    public static void PrintThreadId(string? message = null, string? name = null)
+    {
+        var title = $"{index}:{name}";
+        if (!string.IsNullOrEmpty(message))
+        { title += $"@{message}"; }
+        Console.WriteLine(title+"\t"+Environment.CurrentManagedThreadId.ToString());
+        Interlocked.Increment(ref index);
+    }
+}
+```
+
+等待任务返回的并非原来线程，而是另一个线程开始接班
 
 
 
