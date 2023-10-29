@@ -1219,7 +1219,7 @@ add_executable(cgmath ./cgmath.cpp)		#添加文件
 add_test(NAME cgmath_test COMMAND $<TARGET_FILE:cgmath>)	
 
 #先前在主CAMKE文件engine内add_library指定的库   前者依赖后者
-target_link_libraries(cgmath  PRIVATE engine)
+target_link_libraries(cgmath  PRIVATE  engine)
 ```
 
 

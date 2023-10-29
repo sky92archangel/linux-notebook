@@ -16,9 +16,9 @@ target_compile_features(engine PUBLIC cxx_std_17)	#指定语言版本
 
 target_link_libraries(engine 
 PUBLIC 
-	glfw   
+	glfw  
+	toml++ 
 	)
-		
-
-target_precompile_headers(engine PUBLIC ./include/pch.hpp)
+		 
+target_precompile_headers(engine PUBLIC include/pch.hpp)
  

@@ -10,7 +10,7 @@ project(
 # set(EXPORT_COMPILE_COMMANDS ON) #针对ninja makefile等 需要打开
 # set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
  
-add_subdirectory(3rdlibs)
+add_subdirectory(_vendor_)
 add_subdirectory(engine)
    
 ## test
