@@ -11,6 +11,7 @@ PUBLIC
  
 #将vendor中打包的 Eigen库引入main程序scope
 target_link_libraries(_engine_ PUBLIC Eigen)
+target_link_libraries(_engine_ PUBLIC toml++)
 
 # PRIVATE 头文件搜索路径不会顺延  
 # PUBLIC则会扩展顺延  即 B依赖hpp   A依赖B 则 A也可寻得hpp

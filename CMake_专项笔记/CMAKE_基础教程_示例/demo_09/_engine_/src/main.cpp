@@ -1,18 +1,19 @@
-#include <iostream>
+
 #include "log.hpp"
 
+#include <toml++/toml.hpp>
 // #include <Eigen/Dense>
 #include <Eigen/Dense>
 // #include <../../_vendor_/eigen/Eigen/Dense>
 
-
+#include <iostream>
 // using namespace std;
 
 int main()
 {
 
     std::cout << "hello" << std::endl;
-    MESSAGE("gogoog--+");
+    MESSAGE("gogoog--+11");
     int minx = MIN(586, 78);
     int maxx = MAX(586, 78);
     MESSAGE(minx);
@@ -23,6 +24,11 @@ int main()
 
     MESSAGE(matrix1);
     // std::cout << "------ matrix1 ------" << std::endl << matrix1 << std::endl;
+
+    toml::array tmalArr = toml::array();
+
+    int count = 0;
+    std::cin >> count;
 
     return 0;
 }

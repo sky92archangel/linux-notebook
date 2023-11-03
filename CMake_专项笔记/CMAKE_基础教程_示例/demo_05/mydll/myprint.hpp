@@ -1,6 +1,7 @@
 #pragma once
 
-  
+#define MY_LIB_API __declspec(dllexport) 
+ 
 #include<iostream>
 #include<string>
  
