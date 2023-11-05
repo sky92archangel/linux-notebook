@@ -27,3 +27,9 @@ cmake -S . -B build-gc -G "MinGW Makefiles"
 cmake --build ./build-gc/
 result file will appear at folder ./build-gc/
  
+or
+
+cmake -S . -B build-vs -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release
+cmake --build ./build-vs/ --parallel 4
+cmake --build ./build-vs/ --target install
+sln file will appear at folder ./build-vs/

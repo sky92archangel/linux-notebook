@@ -1,4 +1,4 @@
-# Install script for directory: C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_
+# Install script for directory: R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,11 +34,21 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/tomlplusplus/cmake_install.cmake")
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/tomlplusplus/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/eigen/cmake_install.cmake")
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/eigen/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/spdlog/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/opencv/cmake_install.cmake")
 endif()
 

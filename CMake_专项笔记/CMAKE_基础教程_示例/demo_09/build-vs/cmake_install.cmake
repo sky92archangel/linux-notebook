@@ -1,4 +1,4 @@
-# Install script for directory: C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09
+# Install script for directory: R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,12 +34,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/cmake_install.cmake")
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_vendor_/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_engine_/cmake_install.cmake")
+  include("R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_engine_/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

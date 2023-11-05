@@ -1,4 +1,4 @@
-# Install script for directory: C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_/tomlplusplus
+# Install script for directory: R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_/tomlplusplus
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
