@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build",
+  "command": "C:\\_PRO\\Develop\\LLVM\\bin\\clang++.exe -IC:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_engine_/include -IC:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_/eigen/. -IC:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_/tomlplusplus/. -IC:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/_vendor_/spdlog/. -g -Xclang -gcodeview -O0 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=c++17 -o _engine_\\CMakeFiles\\_engine_.dir\\src\\main.cpp.obj -c C:\\_DATA\\NOTE\\linux-notebook\\CMake_专项笔记\\CMAKE_基础教程_示例\\demo_09\\_engine_\\src\\main.cpp",
+  "file": "C:\\_DATA\\NOTE\\linux-notebook\\CMake_专项笔记\\CMAKE_基础教程_示例\\demo_09\\_engine_\\src\\main.cpp"
+}
+]

@@ -1,0 +1,23 @@
+# CMake generation dependency list for this directory.
+C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/CMakeLists.txt
+C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/3.22.0-rc2/CMakeCCompiler.cmake
+C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/3.22.0-rc2/CMakeCXXCompiler.cmake
+C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/3.22.0-rc2/CMakeRCCompiler.cmake
+C:/_DATA/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/3.22.0-rc2/CMakeSystem.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeCInformation.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeCXXInformation.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeGenericSystem.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeRCInformation.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Compiler/MSVC-C.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Compiler/MSVC-CXX.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Platform/Windows-MSVC-C.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Platform/Windows-MSVC.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Platform/Windows.cmake
+C:/_PRO/Develop/CMake/share/cmake-3.22/Modules/Platform/WindowsPaths.cmake

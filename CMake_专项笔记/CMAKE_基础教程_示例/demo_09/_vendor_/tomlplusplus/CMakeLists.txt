@@ -1,3 +1,3 @@
-add_library(toml++ INTERFACE)
-target_include_directories(toml++ INTERFACE ./)
-target_compile_features(toml++ INTERFACE cxx_std_17)
+add_library(Tomlpp INTERFACE)
+target_include_directories(Tomlpp INTERFACE ./)
+target_compile_features(Tomlpp INTERFACE cxx_std_17)
