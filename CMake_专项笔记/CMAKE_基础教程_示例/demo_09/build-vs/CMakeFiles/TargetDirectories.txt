@@ -1,3 +1,0 @@
-R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/ALL_BUILD.dir
-R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/CMakeFiles/ZERO_CHECK.dir
-R:/NOTE/linux-notebook/CMake_专项笔记/CMAKE_基础教程_示例/demo_09/build-vs/_engine_/CMakeFiles/_engine_.dir
